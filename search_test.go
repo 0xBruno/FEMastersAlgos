@@ -18,3 +18,25 @@ func TestBinarySearch(t *testing.T) {
 	}
 
 }
+
+func TestTwoCrystalBalls(t *testing.T) {
+	got := TwoCrystalBalls([]bool{false, false, false, true, true})
+	want := 3
+
+	if got != want {
+
+		t.Errorf("INDEX INCORRECT")
+		t.Errorf("GOT %d", got)
+		t.Errorf("WANT %d", want)
+	}
+
+	got = TwoCrystalBalls([]bool{true, true, true, true, true})
+	want = 1
+
+	if got != want {
+		t.Errorf("INDEX INCORRECT")
+		t.Errorf("GOT %d", got)
+		t.Errorf("WANT %d", want)
+	}
+
+}
