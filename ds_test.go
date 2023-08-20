@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"testing"
 )
 
 func TestNewLinkedList(t *testing.T) {
+	// putting it all in one func to avoid fixtures
 	list := NewLinkedList()
 
 	for i := 0; i <= 1000; i++ {
@@ -62,7 +62,7 @@ func TestNewLinkedList(t *testing.T) {
 	err = list.Remove("LL 3")
 
 	if err != nil {
-		log.Fatalln(err)
+		t.Fatal(err)
 	}
 
 	// would get LL 3 if not removed
@@ -86,4 +86,20 @@ func TestNewLinkedList(t *testing.T) {
 		t.Errorf(got.(string), want)
 	}
 
+	// zeroth index is removed twice
+	err = list.RemoveAt(0)
+	err = list.RemoveAt(0)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got = list.Head.Data
+	want = "LL 2"
+
+	if got != want {
+		t.Errorf(got.(string), want)
+	}
+
+	fmt.Println(list.Length)
 }

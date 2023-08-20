@@ -18,9 +18,7 @@ type LinkedListInterface interface {
 	Get(index int) (any, error)
 	Prepend(item any)
 	Remove(item any) error
-	// TODO
-	// removeAt(index int) error
-
+	RemoveAt(index int) error
 }
 
 // LinkedList implementation
@@ -28,7 +26,7 @@ type LinkedList struct {
 	Length int
 	Head   *Node
 	Tail   *Node
-	errs   map[string]error
+	errs   CustomErrs
 }
 
 func (l *LinkedList) GetLength() int {
@@ -40,9 +38,9 @@ func (l *LinkedList) InsertAt(item any, index int) error {
 	node := l.Head
 
 	if index > l.Length {
-		return l.errs["OutOfBoundInsertion"]
+		return l.errs.OutOfBoundInsertion
 	} else if l.Length == 0 {
-		return l.errs["OutOfBoundInsertion"]
+		return l.errs.OutOfBoundInsertion
 	}
 
 	for i := 0; ; i++ {
@@ -94,7 +92,7 @@ func (l *LinkedList) Get(index int) (any, error) {
 		}
 		current = current.Next
 	}
-	return nil, l.errs["OutOfBoundGeneric"]
+	return nil, l.errs.OutOfBoundGeneric
 }
 
 func (l *LinkedList) Prepend(item any) {
@@ -115,12 +113,14 @@ func (l *LinkedList) Remove(item any) error {
 			l.Head = current.Next
 			current.Next.Prev = nil
 			current.Next = nil
+			l.Length--
 			return nil
 
 		} else if current.Data == item && current == l.Tail { // if last node matches
 			l.Tail = current.Prev
 			current.Prev.Next = nil
 			current.Prev = nil
+			l.Length--
 			return nil
 
 		} else if current.Data == item { // somewhere in the middle
@@ -132,21 +132,79 @@ func (l *LinkedList) Remove(item any) error {
 			current.Next = nil
 			current.Prev = nil
 			current.Data = nil
-
+			l.Length--
 			return nil
 
 		}
 
 		// reached the end
 		if current == l.Tail {
-			return l.errs["NotFoundGeneric"]
+			return l.errs.NotFoundGeneric
 		}
 
 		current = current.Next
 	}
 }
 
+func (l *LinkedList) RemoveAt(index int) error {
+	current := l.Head
+
+	for i := 0; i < l.Length-1; i++ {
+		if index == 0 { // if first item matches
+			l.Head = current.Next
+			current.Next.Prev = nil
+			current.Next = nil
+			l.Length--
+			return nil
+
+		} else if index == l.Length-1 { // if last node matches
+			l.Tail = current.Prev
+			current.Prev.Next = nil
+			current.Prev = nil
+			l.Length--
+			return nil
+
+		} else if index == i { // somewhere in the middle
+
+			current.Prev.Next = current.Next
+			current.Next.Prev = current.Prev
+
+			// don't think this is necessary
+			current.Next = nil
+			current.Prev = nil
+			current.Data = nil
+			l.Length--
+			return nil
+		}
+
+		// reached the end
+		if current == l.Tail {
+			return l.errs.NotFoundGeneric
+		}
+
+		current = current.Next
+	}
+
+	return l.errs.NotFoundGeneric
+}
+
+type CustomErrs struct {
+	OutOfBoundInsertion error
+	OutOfBoundGeneric   error
+	NotFoundGeneric     error
+}
+
+func Errs() CustomErrs {
+
+	return CustomErrs{
+		OutOfBoundGeneric:   fmt.Errorf("ERROR: out of bounds"),
+		OutOfBoundInsertion: fmt.Errorf("ERROR: cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
+		NotFoundGeneric:     fmt.Errorf("ERROR: item was not found"),
+	}
+}
+
 func NewLinkedList() LinkedList {
+
 	return LinkedList{
 		Length: 0,
 		Head: &Node{
@@ -154,10 +212,6 @@ func NewLinkedList() LinkedList {
 			Next: nil,
 			Prev: nil,
 		},
-		errs: map[string]error{
-			"OutOfBoundInsertion": fmt.Errorf("cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
-			"OutOfBoundGeneric":   fmt.Errorf("out of bounds"),
-			"NotFoundGeneric":     fmt.Errorf("item was not found"),
-		},
+		errs: Errs(),
 	}
 }
