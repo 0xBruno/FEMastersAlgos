@@ -101,5 +101,36 @@ func TestNewLinkedList(t *testing.T) {
 		t.Errorf(got.(string), want)
 	}
 
-	fmt.Println(list.Length)
+}
+
+func TestNewQueue(t *testing.T) {
+	q := NewQueue()
+
+	for i := 0; i < 1000; i++ {
+		q.Enqueue(i)
+	}
+
+	got := q.Length
+	want := 1000
+
+	if got != want {
+		t.Errorf(string(rune(got)), want)
+	}
+
+	dq1, _ := q.Dequeue()
+	dq2, _ := q.Dequeue()
+	dq3, _ := q.Dequeue()
+	want1 := 0
+	want2 := 1
+	want3 := 2
+
+	if dq1 != want1 && dq2 != want2 && dq3 != want3 {
+		t.Errorf(string(rune(got)), want)
+	}
+
+	peek := q.Peek()
+	want = 3
+	if peek != want {
+		t.Errorf(string(rune(got)), want)
+	}
 }

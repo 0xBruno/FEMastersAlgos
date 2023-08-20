@@ -192,15 +192,7 @@ type CustomErrs struct {
 	OutOfBoundInsertion error
 	OutOfBoundGeneric   error
 	NotFoundGeneric     error
-}
-
-func Errs() CustomErrs {
-
-	return CustomErrs{
-		OutOfBoundGeneric:   fmt.Errorf("ERROR: out of bounds"),
-		OutOfBoundInsertion: fmt.Errorf("ERROR: cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
-		NotFoundGeneric:     fmt.Errorf("ERROR: item was not found"),
-	}
+	EmptyQueue          error
 }
 
 func NewLinkedList() LinkedList {
@@ -212,6 +204,51 @@ func NewLinkedList() LinkedList {
 			Next: nil,
 			Prev: nil,
 		},
-		errs: Errs(),
+		errs: CustomErrs{
+			OutOfBoundGeneric:   fmt.Errorf("ERROR: out of bounds"),
+			OutOfBoundInsertion: fmt.Errorf("ERROR: cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
+			NotFoundGeneric:     fmt.Errorf("ERROR: item was not found"),
+		},
 	}
+}
+
+// QueueInterface api
+type QueueInterface interface {
+	Enqueue(item any)
+	Dequeue() (any, error)
+	Peek() any
+}
+
+type Queue = LinkedList
+
+func NewQueue() Queue {
+	return Queue{
+		Length: 0,
+		Head:   nil,
+		Tail:   nil,
+		errs: CustomErrs{
+			EmptyQueue: fmt.Errorf("queue is empty! cannot dequeue"),
+		},
+	}
+}
+
+func (l *Queue) Enqueue(item any) {
+	l.Append(item)
+}
+
+func (l *Queue) Dequeue() (any, error) {
+	if l.Head == nil {
+		return nil, l.errs.EmptyQueue
+	}
+
+	oldHead := l.Head
+	l.Head = oldHead.Next
+	oldHead.Next.Prev = nil
+	oldHead.Next = nil
+	l.Length--
+	return oldHead.Data, nil
+}
+
+func (l *Queue) Peek() any {
+	return l.Head.Data
 }
