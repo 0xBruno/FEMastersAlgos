@@ -16,10 +16,11 @@ type LinkedListInterface interface {
 	InsertAt(item any, index int) error
 	Append(item any)
 	Get(index int) (any, error)
+	Prepend(item any)
 	// TODO
 	// remove(item any) error
-	//removeAt(index int) error
-	//prepend(item any)
+	// removeAt(index int) error
+
 }
 
 // LinkedList implementation
@@ -75,6 +76,7 @@ func (l *LinkedList) Append(item any) {
 		// if we are at the end
 		if current.Next == nil {
 			current.Next = &node
+			node.Prev = current
 			l.Tail = &node
 			l.Length++
 			return
@@ -93,6 +95,16 @@ func (l *LinkedList) Get(index int) (any, error) {
 		current = current.Next
 	}
 	return nil, l.errs["OutOfBoundGeneric"]
+}
+
+func (l *LinkedList) Prepend(item any) {
+	newHead := &Node{
+		Data: item,
+		Next: l.Head,
+		Prev: nil,
+	}
+	l.Head.Prev = newHead
+	l.Head = newHead
 }
 
 func NewLinkedList() LinkedList {

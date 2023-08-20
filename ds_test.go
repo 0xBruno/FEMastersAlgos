@@ -35,4 +35,14 @@ func TestNewLinkedList(t *testing.T) {
 	if got != want {
 		t.Errorf(got.(string), want)
 	}
+
+	// get()
+	list.Prepend("FIRST!")
+	got = list.Head.Data
+	want = "FIRST!"
+
+	if got != want {
+		t.Errorf(got.(string), want)
+	}
+
 }
