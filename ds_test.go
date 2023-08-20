@@ -9,11 +9,11 @@ func TestNewLinkedList(t *testing.T) {
 	list := NewLinkedList()
 
 	for i := 0; i <= 1000; i++ {
-		list.append(fmt.Sprintf("LL %d", i))
+		list.Append(fmt.Sprintf("LL %d", i))
 	}
 
 	// test head
-	got := list.head.data
+	got := list.Head.Data
 	want := "LL 0"
 
 	if got != want {
@@ -21,11 +21,18 @@ func TestNewLinkedList(t *testing.T) {
 	}
 
 	// test tail
-	got = list.tail.data
+	got = list.Tail.Data
 	want = "LL 1000"
 
 	if got != want {
 		t.Errorf(got.(string), want)
 	}
 
+	// get()
+	got, _ = list.Get(69)
+	want = "LL 69"
+
+	if got != want {
+		t.Errorf(got.(string), want)
+	}
 }

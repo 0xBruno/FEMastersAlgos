@@ -5,91 +5,107 @@ import (
 )
 
 type Node struct {
-	data any
-	next *Node
-	prev *Node
+	Data any
+	Next *Node
+	Prev *Node
 }
 
 // LinkedListInterface API
 type LinkedListInterface interface {
-	getLength() int
-	insertAt(item any, index int) error
-	append(item any)
-	//remove(item any) error
+	GetLength() int
+	InsertAt(item any, index int) error
+	Append(item any)
+	Get(index int) (any, error)
+	// TODO
+	// remove(item any) error
 	//removeAt(index int) error
 	//prepend(item any)
-	//get(index int) error
 }
 
 // LinkedList implementation
 type LinkedList struct {
-	length int
-	head   *Node
-	tail   *Node
+	Length int
+	Head   *Node
+	Tail   *Node
+	errs   map[string]error
 }
 
-func (l *LinkedList) getLength() int {
-	return l.length
+func (l *LinkedList) GetLength() int {
+	return l.Length
 }
 
-// insertAt inserts any data at any index within the list
-func (l *LinkedList) insertAt(item any, index int) error {
-	node := l.head
-	outOfBoundsError := fmt.Errorf("cannot insert at an out of bounds index into the list or list is empty. Use append() instead")
+// InsertAt inserts any data at any index within the list
+func (l *LinkedList) InsertAt(item any, index int) error {
+	node := l.Head
 
-	if index > l.length {
-		return outOfBoundsError
-	} else if l.length == 0 {
-		return outOfBoundsError
+	if index > l.Length {
+		return l.errs["OutOfBoundInsertion"]
+	} else if l.Length == 0 {
+		return l.errs["OutOfBoundInsertion"]
 	}
 
 	for i := 0; ; i++ {
 		if index == i {
-			node.data = item
+			node.Data = item
 			return nil
 		}
 
-		node = node.next
+		node = node.Next
 	}
 }
 
-func (l *LinkedList) append(item any) {
+func (l *LinkedList) Append(item any) {
 
 	node := Node{
-		data: item,
-		next: nil,
-		prev: nil,
+		Data: item,
+		Next: nil,
+		Prev: nil,
 	}
 
 	// empty list
-	if l.length == 0 {
-		l.head = &node
-		l.tail = &node
-		l.length++
+	if l.Length == 0 {
+		l.Head = &node
+		l.Tail = &node
+		l.Length++
 		return
 	}
 
-	current := l.head
+	current := l.Head
 	for {
 		// if we are at the end
-		if current.next == nil {
-			current.next = &node
-			l.tail = &node
-			l.length++
+		if current.Next == nil {
+			current.Next = &node
+			l.Tail = &node
+			l.Length++
 			return
 		}
 
-		current = current.next
+		current = current.Next
 	}
+}
+
+func (l *LinkedList) Get(index int) (any, error) {
+	current := l.Head
+	for i := 0; i < l.Length-1; i++ {
+		if index == i {
+			return current.Data, nil
+		}
+		current = current.Next
+	}
+	return nil, l.errs["OutOfBoundGeneric"]
 }
 
 func NewLinkedList() LinkedList {
 	return LinkedList{
-		length: 0,
-		head: &Node{
-			data: nil,
-			next: nil,
-			prev: nil,
+		Length: 0,
+		Head: &Node{
+			Data: nil,
+			Next: nil,
+			Prev: nil,
+		},
+		errs: map[string]error{
+			"OutOfBoundInsertion": fmt.Errorf("cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
+			"OutOfBoundGeneric":   fmt.Errorf("out of bounds"),
 		},
 	}
 }
