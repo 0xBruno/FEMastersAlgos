@@ -17,8 +17,8 @@ type LinkedListInterface interface {
 	Append(item any)
 	Get(index int) (any, error)
 	Prepend(item any)
+	Remove(item any) error
 	// TODO
-	// remove(item any) error
 	// removeAt(index int) error
 
 }
@@ -107,6 +107,45 @@ func (l *LinkedList) Prepend(item any) {
 	l.Head = newHead
 }
 
+func (l *LinkedList) Remove(item any) error {
+	current := l.Head
+	for {
+
+		if current.Data == item && current == l.Head { // if first item matches
+			l.Head = current.Next
+			current.Next.Prev = nil
+			current.Next = nil
+			return nil
+
+		} else if current.Data == item && current == l.Tail { // if last node matches
+			l.Tail = current.Prev
+			current.Prev.Next = nil
+			current.Prev = nil
+			return nil
+
+		} else if current.Data == item { // somewhere in the middle
+
+			current.Prev.Next = current.Next
+			current.Next.Prev = current.Prev
+
+			// don't think this is necessary
+			current.Next = nil
+			current.Prev = nil
+			current.Data = nil
+
+			return nil
+
+		}
+
+		// reached the end
+		if current == l.Tail {
+			return l.errs["NotFoundGeneric"]
+		}
+
+		current = current.Next
+	}
+}
+
 func NewLinkedList() LinkedList {
 	return LinkedList{
 		Length: 0,
@@ -118,6 +157,7 @@ func NewLinkedList() LinkedList {
 		errs: map[string]error{
 			"OutOfBoundInsertion": fmt.Errorf("cannot insert at an out of bounds index into the list or list is empty. Use append() instead"),
 			"OutOfBoundGeneric":   fmt.Errorf("out of bounds"),
+			"NotFoundGeneric":     fmt.Errorf("item was not found"),
 		},
 	}
 }
