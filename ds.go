@@ -193,6 +193,7 @@ type CustomErrs struct {
 	OutOfBoundGeneric   error
 	NotFoundGeneric     error
 	EmptyQueue          error
+	EmptyStack          error
 }
 
 func NewLinkedList() LinkedList {
@@ -219,15 +220,19 @@ type QueueInterface interface {
 	Peek() any
 }
 
-type Queue = LinkedList
+type Queue struct {
+	LinkedList
+}
 
 func NewQueue() Queue {
 	return Queue{
-		Length: 0,
-		Head:   nil,
-		Tail:   nil,
-		errs: CustomErrs{
-			EmptyQueue: fmt.Errorf("queue is empty! cannot dequeue"),
+		LinkedList{
+			Length: 0,
+			Head:   nil,
+			Tail:   nil,
+			errs: CustomErrs{
+				EmptyQueue: fmt.Errorf("queue is empty! cannot dequeue"),
+			},
 		},
 	}
 }
@@ -251,4 +256,54 @@ func (l *Queue) Dequeue() (any, error) {
 
 func (l *Queue) Peek() any {
 	return l.Head.Data
+}
+
+// StackInterface api
+type StackInterface interface {
+	Push(item any)
+	Pop() (any, error)
+	Peek() any
+}
+
+type Stack struct {
+	LinkedList
+}
+
+func NewStack() Stack {
+	return Stack{
+		LinkedList{
+			Length: 0,
+			Head:   nil,
+			Tail:   nil,
+			errs: CustomErrs{
+				EmptyStack: fmt.Errorf("stack is empty! cannot pop element"),
+			},
+		},
+	}
+}
+
+func (l *Stack) Push(item any) {
+	l.Append(item)
+}
+
+func (l *Stack) Pop() (any, error) {
+
+	if l.Tail == nil {
+		return nil, l.errs.EmptyStack
+	}
+
+	popped := l.Tail
+	prev := l.Tail.Prev
+	// remove forward link
+	prev.Next = nil
+	// remove back link
+	popped.Prev = nil
+	// update ll
+	l.Tail = prev
+	l.Length--
+	return popped.Data, nil
+}
+
+func (l *Stack) Peek() any {
+	return l.Tail.Data
 }

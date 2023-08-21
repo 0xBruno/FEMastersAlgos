@@ -106,11 +106,10 @@ func TestNewLinkedList(t *testing.T) {
 func TestNewQueue(t *testing.T) {
 	q := NewQueue()
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i <= 1000; i++ {
 		q.Enqueue(i)
 	}
-
-	got := q.Length
+	got := q.Tail.Data.(int)
 	want := 1000
 
 	if got != want {
@@ -132,5 +131,44 @@ func TestNewQueue(t *testing.T) {
 	want = 3
 	if peek != want {
 		t.Errorf(string(rune(got)), want)
+	}
+}
+
+func TestNewStack(t *testing.T) {
+	stack := NewStack()
+
+	for i := 0; i < 1000; i++ {
+		stack.Push(i)
+	}
+
+	got, _ := stack.Pop()
+	want := 999
+
+	if got != want {
+		t.Errorf(
+			"%d %d", got,
+			want,
+		)
+	}
+
+	got = stack.Peek()
+	want = 998
+
+	if got != want {
+		t.Errorf(
+			"%d %d", got,
+			want,
+		)
+	}
+
+	// tail shouldn't be moved with previous peek
+	got = stack.Peek()
+	want = 998
+
+	if got != want {
+		t.Errorf(
+			"%d %d", got,
+			want,
+		)
 	}
 }
