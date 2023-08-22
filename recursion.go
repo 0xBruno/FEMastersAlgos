@@ -1,10 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"log"
-)
-
 type Point struct {
 	x int
 	y int
@@ -13,24 +8,24 @@ type Point struct {
 // up down left & right
 var dir = [][]int{{0, 1}, {0, -1}, {-1, 0}, {1, 0}}
 
-func walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path *[]Point) (bool, error) {
+func walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path *[]Point) bool {
 	// 1. Base Case
 	// off the map
 	if curr.x < 0 || curr.x >= len(maze[0]) || curr.y < 0 || curr.y >= len(maze) {
-		return false, fmt.Errorf("off the map")
+		return false
 	}
 	// on a wall
 	if string(maze[curr.y][curr.x]) == wall {
-		return false, fmt.Errorf("on a wall")
+		return false
 	}
 	// at the end
 	if curr.x == end.x && curr.y == end.y {
 		*path = append(*path, end)
-		return true, nil
+		return true
 	}
 	// have seen this point
 	if seen[curr.y][curr.x] {
-		return false, nil
+		return false
 	}
 
 	// 3 recurse
@@ -42,13 +37,13 @@ func walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path
 	for i := 0; i < len(dir); i++ {
 		x, y := dir[i][0], dir[i][1]
 
-		success, _ := walk(maze, wall, Point{
+		success := walk(maze, wall, Point{
 			x: curr.x + x,
 			y: curr.y + y,
 		}, end, seen, path)
 
 		if success {
-			return true, nil
+			return true
 		}
 	}
 
@@ -56,7 +51,7 @@ func walk(maze []string, wall string, curr Point, end Point, seen [][]bool, path
 	// popping from stack
 	*path = (*path)[:len(*path)-1]
 
-	return false, fmt.Errorf("something bad happened")
+	return false
 }
 
 func MazeSolver(maze []string, wall string, start Point, end Point) []Point {
@@ -74,11 +69,7 @@ func MazeSolver(maze []string, wall string, start Point, end Point) []Point {
 
 	var path []Point
 
-	_, err := walk(maze, wall, start, end, seen, &path)
-
-	if err != nil {
-		log.Fatalln(err)
-	}
+	walk(maze, wall, start, end, seen, &path)
 
 	return path
 }

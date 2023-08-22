@@ -2,22 +2,25 @@ package main
 
 func BubbleSort(unsorted []int) []int {
 
-	// decrementing array
-	for length := len(unsorted) - 1; length != 0; length-- {
+	for i := 0; i < len(unsorted)-1; i++ {
 
-		// loop over entire shrinking array
-		for i := 0; i < length; i++ {
-
+		for j := 0; j < len(unsorted)-1-i; j++ {
 			// if left is larger than right, swap
-			if unsorted[i] > unsorted[i+1] {
-				smaller := unsorted[i+1]
-				larger := unsorted[i]
-				unsorted[i] = smaller
-				unsorted[i+1] = larger
+			if unsorted[j] > unsorted[j+1] {
+				smaller := unsorted[j+1]
+				larger := unsorted[j]
+				unsorted[j] = smaller
+				unsorted[j+1] = larger
 			}
 		}
+
 	}
 
 	// now sorted
 	return unsorted
+}
+
+// QuickSort divide & conquer
+func QuickSort() {
+
 }
