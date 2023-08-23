@@ -129,3 +129,24 @@ func TestInOrderSearch(t *testing.T) {
 		t.Fatal(result1, test1)
 	}
 }
+
+func TestBreadthFirstSearch(t *testing.T) {
+	tree1, _ := newBinaryTrees()
+
+	got := BreadthFirstSearch(tree1, 45)
+	got2 := BreadthFirstSearch(tree1, 7)
+	got3 := BreadthFirstSearch(tree1, 69)
+
+	if got != true {
+		t.Fatal(got)
+	}
+
+	if got2 != true {
+		t.Fatal(got2)
+	}
+
+	if got3 != false {
+		t.Fatal(got3)
+	}
+
+}

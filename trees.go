@@ -1,5 +1,9 @@
 package main
 
+import (
+	"log"
+)
+
 type TreeNode struct {
 	value int
 	left  *TreeNode
@@ -51,3 +55,34 @@ func InOrderSearch(root *TreeNode) []int {
 }
 
 // not doing post order, you just move the pushing of the path stack after the recursion
+
+func BreadthFirstSearch(root *TreeNode, needle int) bool {
+	q := Queue{}
+	q.Enqueue(root)
+
+	for {
+		if q.Length == 0 {
+			break
+		}
+
+		curr, err := q.Dequeue()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		if curr.(*TreeNode).value == needle {
+			return true
+		}
+
+		if curr.(*TreeNode).left != nil {
+			q.Enqueue(curr.(*TreeNode).left)
+		}
+
+		if curr.(*TreeNode).right != nil {
+			q.Enqueue(curr.(*TreeNode).right)
+		}
+
+	}
+
+	return false
+}
