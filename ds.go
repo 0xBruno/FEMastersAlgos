@@ -246,6 +246,12 @@ func (l *Queue) Dequeue() (any, error) {
 		return nil, l.errs.EmptyQueue
 	}
 
+	// if queue only has one node
+	if l.Head.Next == nil {
+		l.Length--
+		return l.Head.Data, nil
+	}
+
 	oldHead := l.Head
 	l.Head = oldHead.Next
 	oldHead.Next.Prev = nil
