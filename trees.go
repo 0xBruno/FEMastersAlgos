@@ -86,3 +86,21 @@ func BreadthFirstSearch(root *TreeNode, needle int) bool {
 
 	return false
 }
+
+func CompareBinaryTrees(a *TreeNode, b *TreeNode) bool {
+	// this is actually so simple it makes me want to cry happy tears
+	// base case
+	if a == nil && b == nil {
+		return true
+	}
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	if a.value != b.value {
+		return false
+	}
+
+	return CompareBinaryTrees(a.left, b.left) && CompareBinaryTrees(a.right, b.right)
+}

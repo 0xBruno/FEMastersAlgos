@@ -150,3 +150,15 @@ func TestBreadthFirstSearch(t *testing.T) {
 	}
 
 }
+
+func TestCompareBinaryTrees(t *testing.T) {
+	tree1, tree2 := newBinaryTrees()
+
+	if !CompareBinaryTrees(tree1, tree1) {
+		t.Fatal("something wrong in comparison, comparing same tree")
+	}
+
+	if CompareBinaryTrees(tree1, tree2) {
+		t.Fatal("something wrong in comparison, comparing different tree but results is equal")
+	}
+}
