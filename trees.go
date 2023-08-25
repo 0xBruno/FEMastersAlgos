@@ -104,3 +104,21 @@ func CompareBinaryTrees(a *TreeNode, b *TreeNode) bool {
 
 	return CompareBinaryTrees(a.left, b.left) && CompareBinaryTrees(a.right, b.right)
 }
+
+func DepthFirstSearchBST(current *TreeNode, value int) bool {
+	// base case
+	if current == nil {
+		return false
+	}
+
+	if current.value == value {
+		return true
+	}
+
+	if current.value < value {
+		return DepthFirstSearchBST(current.right, value)
+	}
+
+	return DepthFirstSearchBST(current.left, value)
+
+}

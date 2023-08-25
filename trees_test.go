@@ -162,3 +162,20 @@ func TestCompareBinaryTrees(t *testing.T) {
 		t.Fatal("something wrong in comparison, comparing different tree but results is equal")
 	}
 }
+
+func TestDepthFirstSearchBST(t *testing.T) {
+	tree1, _ := newBinaryTrees()
+
+	if !DepthFirstSearchBST(tree1, 45) {
+		t.Fatal("check 1")
+	}
+
+	if !DepthFirstSearchBST(tree1, 7) {
+		t.Fatal("check 2")
+	}
+
+	if DepthFirstSearchBST(tree1, 69) {
+		t.Fatal("check 3")
+	}
+
+}
