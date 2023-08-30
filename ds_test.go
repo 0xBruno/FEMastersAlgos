@@ -172,3 +172,64 @@ func TestNewStack(t *testing.T) {
 		)
 	}
 }
+
+func TestNewMinHeap(t *testing.T) {
+	heap := NewMinHeap()
+
+	got := heap.Length
+	want := 0
+
+	if got != want {
+		t.Errorf("ERROR IN HEAP INIT")
+	}
+	heap.Insert(5)
+	heap.Insert(3)
+
+	heap.Insert(69)
+	heap.Insert(420)
+	heap.Insert(4)
+	heap.Insert(1)
+	heap.Insert(8)
+	heap.Insert(7)
+
+	got = heap.Length
+	want = 8
+	if got != want {
+		t.Errorf("ERROR IN HEAP LENGTH AFTER INSERTIONS")
+	}
+
+	got, _ = heap.Remove()
+	want = 1
+
+	if got != want {
+		t.Fatal("first deletion", got, want)
+	}
+
+	got, _ = heap.Remove()
+	want = 3
+
+	if got != want {
+		t.Fatal("second deletion")
+	}
+
+	got, _ = heap.Remove()
+	want = 4
+
+	if got != want {
+		t.Fatal("third deletion")
+	}
+	got, _ = heap.Remove()
+	want = 5
+
+	if got != want {
+		t.Fatal("fourth deletion")
+	}
+
+	got = heap.Length
+	want = 4
+
+	if got != want {
+		t.Fatal("error in length check")
+	}
+
+}

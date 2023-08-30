@@ -313,3 +313,104 @@ func (l *Stack) Pop() (any, error) {
 func (l *Stack) Peek() any {
 	return l.Tail.Data
 }
+
+type MinHeapInterface interface {
+	Insert(value int)
+	Remove() (int, error)
+}
+
+type MinHeap struct {
+	data   []int
+	Length int
+}
+
+func (m *MinHeap) Insert(value int) {
+	m.data = append(m.data, value)
+	m.heapifyUp(m.Length)
+	m.Length++
+
+}
+
+func (m *MinHeap) Remove() (int, error) {
+	if m.Length == 0 {
+		return -1, fmt.Errorf("heap is empty")
+	}
+
+	out := m.data[0]
+	m.Length--
+
+	if m.Length == 0 {
+		m.data = []int{}
+		return out, nil
+	}
+
+	m.data[0] = m.data[m.Length]
+	m.heapifyDown(0)
+
+	return out, nil
+}
+
+func (m *MinHeap) heapifyDown(index int) {
+
+	lIdx := m.leftChild(index)
+	rIdx := m.rightChild(index)
+
+	// base case
+	// since we are always working L to R we only check Left
+	if index >= m.Length || lIdx >= m.Length {
+		return
+	}
+
+	lVal := m.data[lIdx]
+	rVal := m.data[rIdx]
+	currVal := m.data[index]
+
+	if lVal > rVal && currVal > rVal {
+		m.data[index] = rVal
+		m.data[rIdx] = currVal
+		m.heapifyDown(rIdx)
+	} else if rVal > lVal && currVal > lVal {
+		m.data[index] = lVal
+		m.data[lIdx] = currVal
+		m.heapifyDown(lIdx)
+	}
+
+}
+
+func (m *MinHeap) heapifyUp(index int) {
+
+	if index == 0 {
+		return
+	}
+
+	parent := m.parent(index)
+	parentValue := m.data[parent]
+	currValue := m.data[index]
+
+	if parentValue > currValue {
+		// swap current with parent
+		m.data[index] = parentValue
+		m.data[parent] = currValue
+		m.heapifyUp(parent)
+	}
+
+}
+
+func (m *MinHeap) parent(index int) int {
+	return (index - 1) / 2
+}
+
+func (m *MinHeap) leftChild(index int) int {
+	return 2*index + 1
+}
+
+func (m *MinHeap) rightChild(index int) int {
+	return 2*index + 2
+}
+
+func NewMinHeap() *MinHeap {
+	return &MinHeap{
+		data:   []int{},
+		Length: 0,
+	}
+}
