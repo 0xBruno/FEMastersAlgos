@@ -414,3 +414,55 @@ func NewMinHeap() *MinHeap {
 		Length: 0,
 	}
 }
+
+type LRUNode struct {
+	value any
+	next  *LRUNode
+	prev  *LRUNode
+}
+
+type LRUInterface interface {
+	Update(key string, value any)
+	Get(key string) error
+}
+
+type LRU struct {
+	length   int
+	head     *LRUNode
+	tail     *LRUNode
+	capacity int
+
+	lookup        map[string]*LRUNode
+	reverseLookup map[*LRUNode]string
+}
+
+func (l *LRU) Update(key string, value any) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (l *LRU) Get(key string) (*LRUNode, error) {
+	// check the cache for existence
+	node := l.lookup[key]
+
+	if node == nil {
+		return nil, fmt.Errorf("item not found")
+	}
+
+	return node, nil
+}
+
+func NewLRU(capacity int) *LRU {
+	return &LRU{
+		length:   0,
+		head:     nil,
+		tail:     nil,
+		capacity: capacity,
+	}
+}
+
+func CreateLRUNode(val any) *LRUNode {
+	return &LRUNode{
+		value: val,
+	}
+}

@@ -233,3 +233,13 @@ func TestNewMinHeap(t *testing.T) {
 	}
 
 }
+
+func TestNewLRU(t *testing.T) {
+	lru := NewLRU(10)
+	node, err := lru.Get("AAA")
+
+	if err != nil {
+		t.Fatal(node, err)
+	}
+
+}
