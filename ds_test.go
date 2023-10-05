@@ -235,11 +235,18 @@ func TestNewMinHeap(t *testing.T) {
 }
 
 func TestNewLRU(t *testing.T) {
-	lru := NewLRU(10)
-	node, err := lru.Get("AAA")
+	lru := NewLRU(3)
+	_, err := lru.Get("AAA")
 
-	if err != nil {
-		t.Fatal(node, err)
+	if err == nil {
+		t.Fatal("should not return value not inserted")
+	}
+
+	lru.Update("foo", 69)
+	val, err := lru.Get("foo")
+
+	if val != 69 {
+		t.Fatal("WRONG")
 	}
 
 }
